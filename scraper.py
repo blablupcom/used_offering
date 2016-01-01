@@ -184,7 +184,7 @@ def parse(search_term, search_tag, p):
             new_stock_count = 0
             new_stock_status = 'replenishing'
         elif not new_stock_count:
-            new_stock_count = 'in stock'
+            new_stock_status = 'in stock'
 
 
 
