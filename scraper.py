@@ -183,13 +183,15 @@ def parse(search_term, search_tag, p):
             new_restock_date = new_stock_count.split('on')[-1].strip()
             new_stock_count = 0
             new_stock_status = 'replenishing'
+        elif not new_stock_count:
+            new_stock_count = 'in stock'
 
 
 
         # print new_stock_count, new_stock_status, new_restock_date
         # print title, asin, pubdate, author, item_format, price_rent, price, low_price, offer_count, other1format, other1asin, other2format, other2asin, other3format, other3asin, newer, tradein
         today_date = str(datetime.now())
-        scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(search_term), 'Search Tag': search_tag, 'Title': unicode(title), 'ASIN': asin, 'PubDate': pubdate, 'Author': unicode(author), 'Format': unicode(item_format), 'PriceRent': price_rent, 'Price': price, 'PriceLow': low_price, 'OfferCount': offer_count, 'Other1Format': unicode(other1format), 'Other1ASIN': other1asin, 'Other2Format': unicode(other2format), 'Other2ASIN': other2asin, 'Other3Format': unicode(other3format), 'Other3ASIN': other3asin, 'Newer_Edition': newer, 'TradeIn': unicode(tradein), 'New Stock Count': new_stock_count, 'New Stock Status': new_stock_status, 'New Restock Date': new_restock_date, 'Date': today_date})
+        scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(search_term), 'Search Tag': search_tag, 'Title': unicode(title), 'ASIN': asin, 'PubDate': pubdate, 'Author': unicode(author), 'Format': unicode(item_format), 'PriceRent': price_rent, 'Price': price, 'PriceLow': low_price, 'OfferCount': offer_count, 'Other1Format': unicode(other1format), 'Other1ASIN': other1asin, 'Other2Format': unicode(other2format), 'Other2ASIN': other2asin, 'Other3Format': unicode(other3format), 'Other3ASIN': other3asin, 'Newer_Edition': newer, 'TradeIn': unicode(tradein), 'NewStockCount': new_stock_count, 'NewStockStatus': new_stock_status, 'NewRestockDate': new_restock_date, 'Date': today_date})
 
 
 if __name__ == '__main__':
