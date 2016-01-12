@@ -1,15 +1,11 @@
-import sys
-reload(sys)
-sys.setdefaultencoding('UTF8')
 import requests
 from bs4 import BeautifulSoup as bs
 import scraperwiki
 from datetime import datetime
 import re
-import time
 
 
-start_url = 'http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords={}'
+start_urls = ['http://www.amazon.com/gp/offer-listing/{}/ref%3Dolp_f_used?ie=UTF8&f_new=true&f_primeEligible=true', 'http://www.amazon.com/gp/offer-listing/{}/ref%3Dolp_f_used?ie=UTF8&f_primeEligible=true&f_used=true&f_usedAcceptable=true&f_usedGood=true&f_usedLikeNew=true&f_usedVeryGood=true']
 ua = {'User-agent': 'Mozilla/5.0'}
 
 
@@ -29,169 +25,173 @@ def connect(start_url, search_term):
 
 
 def parse(search_term, search_tag, p):
-    soup = connect(start_url, search_term)
-    print p
     search_tag = '='+'"'+search_tag+'"'
-    search_rows = soup.find_all('li', 's-result-item celwidget')
-    for search_row in search_rows:
-        search_term = search_term
-        search_tag = search_tag
-        try:
-            title = search_row.find('h2', 'a-size-medium a-color-null s-inline s-access-title a-text-normal').text.strip()
-            asin = search_row.find('a', 'a-link-normal s-access-detail-page  a-text-normal')['href'].split('dp/')[-1].split('/')[0]
-            #asin = '='+'"'+search_row.find('a', 'a-link-normal s-access-detail-page  a-text-normal')['href'].split('dp/')[-1].split('/')[0]+'"'
-        except: continue
-        #print(title)
-        pubdate = ''
-        try:
-            pubdate = search_row.find('div', 'a-row a-spacing-small').find('span', 'a-size-small a-color-secondary').text.strip().replace('by', '')
-        except:
-            pass
-        author = ''
-        try:
-            author = search_row.find('div', 'a-row a-spacing-small').find('div', 'a-row a-spacing-none').text.strip().split('by')[-1].strip()
-        except:
-            pass
-        item_format = ''
-        try:
-            item_format = search_row.find('h3', 'a-size-small a-color-null s-inline  a-text-normal').text.strip()
-        except:
-            pass
-        price_rent = ''
-        try:
-            price_rent = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find(text=re.compile('to rent')).find_previous('span', 'a-size-base a-color-price s-price a-text-bold').text
-        except:
-            pass
-        price = ''
-        try:
-            price = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find(text=re.compile('to buy')).find_previous('span', 'a-size-base a-color-price s-price a-text-bold').text
-        except:
+    print p
+    for start_url in start_urls:
+        soup = connect(start_url, search_term)
+        if 'new=true' in start_url:
+            search_rows = []
             try:
-                price = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('span', 'a-size-small a-color-secondary a-text-strike').find_previous('span', 'a-size-base a-color-price s-price a-text-bold').text
+                search_rows = soup.find_all('div', 'a-row a-spacing-mini olpOffer')
             except:
                 pass
-        low_price = ''
-        try:
-            low_price = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find(text=re.compile('used & new')).find_previous('span', 'a-size-base a-color-price a-text-bold').text
-        except:
-            pass
-        offer_count = ''
-        try:
-            offer_count = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find(text=re.compile('offers')).replace('(', '').replace(')','')
-        except:
-            pass
-        other1format = ''
-        try:
-            other1format = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find('hr', 'a-divider-normal s-result-divider').find_next('a').text
-        except:
-            pass
-        if other1format:
-            other1asin = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find('hr', 'a-divider-normal s-result-divider').find_next('a')['href'].split('dp/')[-1].split('/')[0]
-            #other1asin = '='+'"'+search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find('hr', 'a-divider-normal s-result-divider').find_next('a')['href'].split('dp/')[-1].split('/')[0]+'"'
-        else:
-            other1asin = ''
-        other2format = ''
-        try:
-            other2format = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find(text=re.compile('Other Format')).find_next('a').text
-        except:
-            pass
-        if other2format:
-            other2asin = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find(text=re.compile('Other Format')).find_next('a')['href'].split('dp/')[-1].split('/')[0]
-            #other2asin = '='+'"'+search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find(text=re.compile('Other Format')).find_next('a')['href'].split('dp/')[-1].split('/')[0]+'"'
-        else:
-            other2asin = ''
-        if other1format == other2format:
-            other1format = ''
-            other1asin = ''
-        comma = ''
-        try:
-            comma = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find(text=re.compile('Other Format')).find_next('a').find_next('span', 'a-size-small a-color-secondary').text
-        except:
-            pass
-        other3format = ''
-        if ',' in comma:
-            other3format = ''
-            try:
-                other3format = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find(text=re.compile('Other Format')).find_next('a').find_next('a').text
-            except:
-                pass
-        if other3format:
-            other3asin = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find(text=re.compile('Other Format')).find_next('a').find_next('a')['href'].split('dp/')[-1].split('/')[0]
-            #other3asin = '='+'"'+search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find(text=re.compile('Other Format')).find_next('a').find_next('a')['href'].split('dp/')[-1].split('/')[0]+'"'
-        else:
-            other3asin = ''
-        newer = ''
-        try:
-            newer = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find('div', 'a-column a-span7').find('a', text=re.compile('See newer edition of this book'))
-        except:
-            pass
-        if newer:
-            newer = '='+'"'+newer['href'].split('dp/')[-1].split('/')[0]+'"'
-        tradein = ''
-        try:
-            tradein = search_row.find('div', 'a-fixed-left-grid-col a-col-right').find(text=re.compile('Trade in yours for')).find_next('span', 'a-color-price').text
-        except:
-            pass
-        new_stock_count = new_stock_status = new_restock_date = ''
-        try:
-            new_stock_count = search_row.find('span', text=re.compile('left in stock - order soon')).text.strip()
-        except:
-            try:
-                new_stock_count = search_row.find(text=re.compile('Get it by')).parent.text
-            except:
+            if not search_rows:
+                new_price_absent = 1
+            else:
+                new_price_absent = 0
+            searchstring = search_term
+            search_tag = search_tag
+            for i, search_row in enumerate(search_rows):
+
+                new_price_lowest = new_price_0 = new_price_1 = new_price_2 = new_price_3 = new_price_4 = new_price_5 = new_price_6 = new_price_7 = new_price_8 = new_price_9 = new_price_amazon = back_ordered = ''
                 try:
-                    new_stock_count = search_row.find('span', text=re.compile('Temporarily out of stock')).text.strip()
+
+                    back_ordered = search_row.find('div', 'a-column a-span3 olpDeliveryColumn').find('ul', 'a-vertical').find('span', 'a-list-item').text.strip()
+                    if i == 0:
+                        new_price_lowest = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        new_price_0 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_0 = ''
+                    elif i == 1:
+                        new_price_1 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_1 = ''
+                    elif i == 2:
+                        new_price_2 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_2 = ''
+                    elif i == 3:
+                        new_price_3 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_3 = ''
+                    if i == 4:
+                        new_price_4 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_4 = ''
+                    elif i == 5:
+                        new_price_5 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_5 = ''
+                    if i == 6:
+                        new_price_6 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_6 = ''
+                    elif i == 7:
+                        new_price_7 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_7 = ''
+                    if i == 8:
+                        new_price_8 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_8 = ''
+                    elif i == 9:
+                        new_price_9 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            new_price_9 = ''
+                    amazon_label = search_row.find('h3', 'a-spacing-none olpSellerName').find('img')['alt']
+                    if 'Amazon.com' in amazon_label:
+                        new_price_amazon = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
                 except:
-                    try:
-                        new_stock_count = search_row.find('span', text=re.compile('Currently unavailable')).text.strip()
-                    except:
-                        try:
-                            new_stock_count = search_row.find('span', text=re.compile('may require an extra')).text.strip()
-                        except:
-                            try:
-                                new_stock_count = search_row.find('span', text=re.compile('Available for Pre-order')).text.strip()
-                            except:
-                                try:
-                                    new_stock_count = search_row.find('span', text=re.compile('In stock on')).text.strip()
-                                except:
-                                    pass
-        if 'left in stock - order soon' in new_stock_count:
-            new_stock_count = new_stock_count.split('left')[0].split('Only')[-1].strip()
-            new_stock_status = 'limited'
-            new_restock_date = 'na'
-        elif 'Get it by' in new_stock_count:
-            new_stock_count = 999
-            new_stock_status = 'in stock'
-            new_restock_date = None
-        elif 'Temporarily out of stock' in new_stock_count:
-            new_stock_count = 0
-            new_stock_status = 'Temporarily out'
-            new_restock_date = 'temp'
-        elif 'Currently unavailable' in new_stock_count:
-            new_stock_count = 0
-            new_stock_status = 'unavailable'
-            new_restock_date = 'unknown'
-        elif 'may require an extra' in new_stock_count:
-            new_restock_date = new_stock_count.split('an')[-1].strip().split('to')[0].strip()
-            new_stock_count = 0
-            new_stock_status = 'extra processing'
-        elif 'Available for Pre-order' in new_stock_count:
-            new_restock_date = new_stock_count.split('on')[-1].strip()
-            new_stock_count = 0
-            new_stock_status = 'pre-order'
-        elif 'In stock on' in new_stock_count:
-            new_restock_date = new_stock_count.split('on')[-1].strip()
-            new_stock_count = 0
-            new_stock_status = 'replenishing'
-        elif not new_stock_count:
-            new_stock_status = 'in stock'
+                    pass
+                
+                today_date = str(datetime.now())
+                scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(searchstring), 'Search Tag': search_tag, 'new_price_lowest': new_price_lowest, 'new_price_0': new_price_0, 'new_price_1': new_price_1, 'new_price_2': new_price_2,
+                                                                    'new_price_3': new_price_3, 'new_price_4': new_price_4, 'new_price_5': new_price_5, 'new_price_6': new_price_6, 'new_price_7': new_price_7, 'new_price_8': new_price_8, 'new_price_9': new_price_9,
+                                                                    'new_price_amazon': new_price_amazon, 'new_price_absent': new_price_absent, 'Date': today_date})
 
+        if 'used=true' in start_url:
+            search_rows = []
+            try:
+                search_rows = soup.find_all('div', 'a-row a-spacing-mini olpOffer')
+            except:
+                pass
+            if not search_rows:
+                used_price_absent = 1
+            else:
+                used_price_absent = 0
+            searchstring = search_term
+            search_tag = search_tag
+            for i, search_row in enumerate(search_rows):
+                search_term = search_term
+                search_tag = search_tag
+                status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                status = ''
+                if '- Acceptable' in status_check:
+                    status = 'UsedAcceptable'
+                if '- Good' in status_check:
+                    status = 'UsedGood'
+                if '- Very Good' in status_check:
+                    status = 'UsedVeryGood'
+                if '- Like New' in status_check:
+                    status = 'UsedLikeNew'
 
+                used_price_lowest = used_price_0 = used_price_1 = used_price_2 = used_price_3 = used_price_4 = used_price_5 = used_price_6 = used_price_7 = used_price_8 = used_price_9 = used_cond_0 = used_cond_1 = used_cond_2 =\
+                    used_cond_3 = used_cond_4 = used_cond_5 = used_cond_6 = used_cond_7 = used_cond_8 =  used_cond_9 = ''
+                try:
 
-        # print new_stock_count, new_stock_status, new_restock_date
-        # print title, asin, pubdate, author, item_format, price_rent, price, low_price, offer_count, other1format, other1asin, other2format, other2asin, other3format, other3asin, newer, tradein
-        today_date = str(datetime.now())
-        scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(search_term), 'Search Tag': search_tag, 'Title': unicode(title), 'ASIN': asin, 'PubDate': pubdate, 'Author': unicode(author), 'Format': unicode(item_format), 'PriceRent': price_rent, 'Price': price, 'PriceLow': low_price, 'OfferCount': offer_count, 'Other1Format': unicode(other1format), 'Other1ASIN': other1asin, 'Other2Format': unicode(other2format), 'Other2ASIN': other2asin, 'Other3Format': unicode(other3format), 'Other3ASIN': other3asin, 'Newer_Edition': newer, 'TradeIn': unicode(tradein), 'NewStockCount': new_stock_count, 'NewStockStatus': new_stock_status, 'NewRestockDate': new_restock_date, 'Date': today_date})
+                    back_ordered = search_row.find('div', 'a-column a-span3 olpDeliveryColumn').find('ul', 'a-vertical').find('span', 'a-list-item').text.strip()
+                    if i == 0:
+                        used_price_lowest = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_price_0 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_0 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_0 = used_price_0 = ''
+                    elif i == 1:
+                        used_price_1 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_1 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_1 = used_price_1 = ''
+                    elif i == 2:
+                        used_price_2 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_2 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_2 = used_price_2 = ''
+                    elif i == 3:
+                        used_price_3 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_3 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_3 = used_price_3 = ''
+                    if i == 4:
+                        used_price_4 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_4 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_4 = used_price_4 = ''
+                    elif i == 5:
+                        used_price_5 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_5 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_5 = used_price_5 = ''
+                    if i == 6:
+                        used_price_6 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_6 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_6 = used_price_6 = ''
+                    elif i == 7:
+                        used_price_7 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_7 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_7 = used_price_7 = ''
+                    if i == 8:
+                        used_price_8 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_8 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_8 = used_price_8 = ''
+                    elif i == 9:
+                        used_price_9 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                        used_cond_9 = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                        if 'Back-ordered' in back_ordered:
+                            used_cond_9 = used_price_9 = ''
+
+                except:pass
+
+                print search_tag, searchstring, used_price_lowest, used_price_0, used_price_1, used_price_2, used_price_3, used_price_4, used_price_5, used_price_6, used_price_7, used_price_8, used_price_9, \
+                    used_cond_0, used_cond_1, used_cond_2, used_cond_3, used_cond_4, used_cond_5, used_cond_6, used_cond_7, used_cond_8, used_cond_9, status, used_price_absent
+
+                today_date = str(datetime.now())
+                scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(searchstring), 'Search Tag': search_tag, 'used_price_0': used_price_0, 'used_price_1': used_price_1, 'used_price_2': used_price_2,
+                                                                    'used_price_3': used_price_3, 'used_price_4': used_price_4, 'used_price_5': used_price_5, 'used_price_6': used_price_6, 'used_price_7': used_price_7, 'used_price_8': used_price_8
+                    , 'used_price_9': used_price_9, 'used_cond_0': used_cond_0, 'used_cond_1': used_cond_1, 'used_cond_2': used_cond_2, 'used_cond_3': used_cond_3, 'used_cond_4': used_cond_4, 'used_cond_5': used_cond_5, 'used_cond_6': used_cond_6,
+                      'used_cond_7': used_cond_7, 'used_cond_8': used_cond_8, 'used_cond_9': used_cond_9, 'status': status, 'used_price_absent': used_price_absent, 'Date': today_date})
 
 
 if __name__ == '__main__':
