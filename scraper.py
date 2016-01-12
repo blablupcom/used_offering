@@ -39,7 +39,6 @@ def parse(search_term, search_tag, p):
                 new_price_absent = 1
             else:
                 new_price_absent = 0
-            print new_price_absent
             searchstring = search_term
             search_tag = search_tag
             for i, search_row in enumerate(search_rows):
