@@ -30,7 +30,7 @@ def parse(search_term, search_tag, p):
     for start_url in start_urls:
         soup = connect(start_url, search_term)
         if 'new=true' in start_url:
-            search_rows = []
+            search_rows = None
             try:
                 search_rows = soup.find_all('div', 'a-row a-spacing-mini olpOffer')
             except:
@@ -39,13 +39,12 @@ def parse(search_term, search_tag, p):
                 new_price_absent = 1
             else:
                 new_price_absent = 0
+            print new_price_absent
             searchstring = search_term
             search_tag = search_tag
             for i, search_row in enumerate(search_rows):
-
                 new_price_lowest = new_price_0 = new_price_1 = new_price_2 = new_price_3 = new_price_4 = new_price_5 = new_price_6 = new_price_7 = new_price_8 = new_price_9 = new_price_amazon = back_ordered = ''
                 try:
-
                     back_ordered = search_row.find('div', 'a-column a-span3 olpDeliveryColumn').find('ul', 'a-vertical').find('span', 'a-list-item').text.strip()
                     if i == 0:
                         new_price_lowest = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
@@ -93,7 +92,6 @@ def parse(search_term, search_tag, p):
                         new_price_amazon = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
                 except:
                     pass
-                
                 today_date = str(datetime.now())
                 scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(searchstring), 'Search Tag': search_tag, 'new_price_lowest': new_price_lowest, 'new_price_0': new_price_0, 'new_price_1': new_price_1, 'new_price_2': new_price_2,
                                                                     'new_price_3': new_price_3, 'new_price_4': new_price_4, 'new_price_5': new_price_5, 'new_price_6': new_price_6, 'new_price_7': new_price_7, 'new_price_8': new_price_8, 'new_price_9': new_price_9,
@@ -124,11 +122,9 @@ def parse(search_term, search_tag, p):
                     status = 'UsedVeryGood'
                 if '- Like New' in status_check:
                     status = 'UsedLikeNew'
-
                 used_price_lowest = used_price_0 = used_price_1 = used_price_2 = used_price_3 = used_price_4 = used_price_5 = used_price_6 = used_price_7 = used_price_8 = used_price_9 = used_cond_0 = used_cond_1 = used_cond_2 =\
                     used_cond_3 = used_cond_4 = used_cond_5 = used_cond_6 = used_cond_7 = used_cond_8 =  used_cond_9 = ''
                 try:
-
                     back_ordered = search_row.find('div', 'a-column a-span3 olpDeliveryColumn').find('ul', 'a-vertical').find('span', 'a-list-item').text.strip()
                     if i == 0:
                         used_price_lowest = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
@@ -183,12 +179,10 @@ def parse(search_term, search_tag, p):
                             used_cond_9 = used_price_9 = ''
 
                 except:pass
-
-                #print search_tag, searchstring, used_price_lowest, used_price_0, used_price_1, used_price_2, used_price_3, used_price_4, used_price_5, used_price_6, used_price_7, used_price_8, used_price_9, \
-                #    used_cond_0, used_cond_1, used_cond_2, used_cond_3, used_cond_4, used_cond_5, used_cond_6, used_cond_7, used_cond_8, used_cond_9, status, used_price_absent
-
+                # print search_tag, searchstring, used_price_lowest, used_price_0, used_price_1, used_price_2, used_price_3, used_price_4, used_price_5, used_price_6, used_price_7, used_price_8, used_price_9, \
+                #     used_cond_0, used_cond_1, used_cond_2, used_cond_3, used_cond_4, used_cond_5, used_cond_6, used_cond_7, used_cond_8, used_cond_9, status, used_price_absent
                 today_date = str(datetime.now())
-                scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(searchstring), 'Search Tag': search_tag, 'used_price_0': used_price_0, 'used_price_1': used_price_1, 'used_price_2': used_price_2,
+                scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(searchstring), 'Search Tag': search_tag, 'used_price_lowest': used_price_lowest,'used_price_0': used_price_0, 'used_price_1': used_price_1, 'used_price_2': used_price_2,
                                                                     'used_price_3': used_price_3, 'used_price_4': used_price_4, 'used_price_5': used_price_5, 'used_price_6': used_price_6, 'used_price_7': used_price_7, 'used_price_8': used_price_8
                     , 'used_price_9': used_price_9, 'used_cond_0': used_cond_0, 'used_cond_1': used_cond_1, 'used_cond_2': used_cond_2, 'used_cond_3': used_cond_3, 'used_cond_4': used_cond_4, 'used_cond_5': used_cond_5, 'used_cond_6': used_cond_6,
                       'used_cond_7': used_cond_7, 'used_cond_8': used_cond_8, 'used_cond_9': used_cond_9, 'status': status, 'used_price_absent': used_price_absent, 'Date': today_date})
