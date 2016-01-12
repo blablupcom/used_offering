@@ -184,8 +184,8 @@ def parse(search_term, search_tag, p):
 
                 except:pass
 
-                print search_tag, searchstring, used_price_lowest, used_price_0, used_price_1, used_price_2, used_price_3, used_price_4, used_price_5, used_price_6, used_price_7, used_price_8, used_price_9, \
-                    used_cond_0, used_cond_1, used_cond_2, used_cond_3, used_cond_4, used_cond_5, used_cond_6, used_cond_7, used_cond_8, used_cond_9, status, used_price_absent
+                #print search_tag, searchstring, used_price_lowest, used_price_0, used_price_1, used_price_2, used_price_3, used_price_4, used_price_5, used_price_6, used_price_7, used_price_8, used_price_9, \
+                #    used_cond_0, used_cond_1, used_cond_2, used_cond_3, used_cond_4, used_cond_5, used_cond_6, used_cond_7, used_cond_8, used_cond_9, status, used_price_absent
 
                 today_date = str(datetime.now())
                 scraperwiki.sqlite.save(unique_keys=['Date'], data={'SearchString': unicode(searchstring), 'Search Tag': search_tag, 'used_price_0': used_price_0, 'used_price_1': used_price_1, 'used_price_2': used_price_2,
