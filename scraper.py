@@ -121,7 +121,6 @@ def parse(search_term, search_tag, p):
                             used_price_lowest = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
                             used_price_0 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
                             status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
-                            print status_check
                             if '- Acceptable' in status_check:
                                 used_cond_0 = 'UsedAcceptable'
                             elif '- Good' in status_check:
