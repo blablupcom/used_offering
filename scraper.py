@@ -119,132 +119,134 @@ def parse(search_term, search_tag, p):
                         back_ordered = search_row.find('div', 'a-column a-span3 olpDeliveryColumn').find('ul', 'a-vertical').find('span', 'a-list-item').text.strip()
                         if i == 0:
                             used_price_lowest = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            used_price_0 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
+                            print status_check
                             if '- Acceptable' in status_check:
-                                used_price_0 = 'UsedAcceptable'
-                            if '- Good' in status_check:
-                                used_price_0  = 'UsedGood'
-                            if '- Very Good' in status_check:
-                                used_price_0  = 'UsedVeryGood'
-                            if '- Like New' in status_check:
-                                used_price_0 = 'UsedLikeNew'
+                                used_cond_0 = 'UsedAcceptable'
+                            elif '- Good' in status_check:
+                                used_cond_0 = 'UsedGood'
+                            elif '- Very Good' in status_check:
+                                used_cond_0 = 'UsedVeryGood'
+                            elif '- Like New' in status_check:
+                                used_cond_0 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_0 = used_price_0 = ''
                         elif i == 1:
                             used_price_1 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_1 = 'UsedAcceptable'
+                                used_cond_1 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_1 = 'UsedGood'
+                               used_cond_1 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_1 = 'UsedVeryGood'
+                                used_cond_1 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_1 = 'UsedLikeNew'
+                                used_cond_1 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_1 = used_price_0 = ''
                         elif i == 2:
                             used_price_2 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_2 = 'UsedAcceptable'
+                                used_cond_2 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_2 = 'UsedGood'
+                                used_cond_2 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_2 = 'UsedVeryGood'
+                                used_cond_2 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_2 = 'UsedLikeNew'
+                                used_cond_2 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_2 = used_price_2 = ''
                         elif i == 3:
                             used_price_3 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_3 = 'UsedAcceptable'
+                                used_cond_3 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_3 = 'UsedGood'
+                                used_cond_3 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_3 = 'UsedVeryGood'
+                                used_cond_3 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_3 = 'UsedLikeNew'
+                                used_cond_3 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_3 = used_price_3 = ''
                         if i == 4:
                             used_price_4 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_4 = 'UsedAcceptable'
+                                used_cond_4 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_4 = 'UsedGood'
+                                used_cond_4 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_4 = 'UsedVeryGood'
+                                used_cond_4 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_4 = 'UsedLikeNew'
+                                used_cond_4 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_4 = used_price_4 = ''
                         elif i == 5:
                             used_price_5 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_5 = 'UsedAcceptable'
+                                used_cond_5 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_5 = 'UsedGood'
+                                used_cond_5 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_5 = 'UsedVeryGood'
+                                used_cond_5 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_5 = 'UsedLikeNew'
+                                used_cond_5 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_5 = used_price_5 = ''
                         if i == 6:
                             used_price_6 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_6 = 'UsedAcceptable'
+                                used_cond_6 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_6 = 'UsedGood'
+                                used_cond_6 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_6 = 'UsedVeryGood'
+                                used_cond_6 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_6 = 'UsedLikeNew'
+                                used_cond_6 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_6 = used_price_6 = ''
                         elif i == 7:
                             used_price_7 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_7 = 'UsedAcceptable'
+                                used_cond_7 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_7 = 'UsedGood'
+                                used_cond_7 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_7 = 'UsedVeryGood'
+                                used_cond_7 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_7 = 'UsedLikeNew'
+                                used_cond_7 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_7 = used_price_7 = ''
                         if i == 8:
                             used_price_8 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_8 = 'UsedAcceptable'
+                                used_cond_8 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_8 = 'UsedGood'
+                               used_cond_8 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_8 = 'UsedVeryGood'
+                                used_cond_8 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_8 = 'UsedLikeNew'
+                                used_cond_8 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_8 = used_price_8 = ''
                         elif i == 9:
                             used_price_9 = search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
-                            status_check= search_row.find('span', 'a-size-large a-color-price olpOfferPrice a-text-bold').text.strip()
+                            status_check = search_row.find('span', 'a-size-medium olpCondition a-text-bold').text.strip()
                             if '- Acceptable' in status_check:
-                                used_price_9 = 'UsedAcceptable'
+                                used_cond_9 = 'UsedAcceptable'
                             if '- Good' in status_check:
-                                used_price_9 = 'UsedGood'
+                                used_cond_9 = 'UsedGood'
                             if '- Very Good' in status_check:
-                                used_price_9 = 'UsedVeryGood'
+                                used_cond_9 = 'UsedVeryGood'
                             if '- Like New' in status_check:
-                                used_price_9 = 'UsedLikeNew'
+                                used_cond_9 = 'UsedLikeNew'
                             if 'Back-ordered' in back_ordered:
                                 used_cond_9 = used_price_9 = ''
 
