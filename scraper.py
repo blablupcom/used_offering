@@ -22,7 +22,11 @@ def connect(start_url, search_term):
     while 'Robot Check' in title:
         search_page = requests.get(start_url.format(search_term), headers=ua)
         soup = bs(search_page.text, 'lxml')
-        title = soup.title.text
+        title = ''
+        try:
+            title = soup.title.text
+        except:
+            pass
     if soup:
         pass
     else:
